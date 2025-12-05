@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Image Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Student Image Gallery</h1>
+
+  <div id="form-container">
+    <form id="selectionForm">
+      <label for="branch">Select Branch:</label>
+      <select id="branch" required>
+        <option value="" disabled selected>Select branch</option>
+        <option value="CS">CS</option>
+        <option value="CD">CD</option>
+        <option value="CM">CM</option>
+        <option value="CO">CO</option>
+        <option value="IT">IT</option>
+        <option value="EC">EC</option>
+        <option value="ME">ME</option>
+        <option value="EE">EE</option>
+        <option value="CE">CE</option>
+        <option value="CB">CB</option>
+      </select>
+
+      <label for="type">Select Type:</label>
+      <select id="type" required>
+        <option value="" disabled selected>Select type</option>
+        
+        <option value="R">Regular</option>
+      </select>
+
+      <label for="year">Enter Year (e.g., 23, 24):</label>
+      <input type="text" id="year" pattern="^\d{2}$" title="Please enter two digit year (e.g., 23)" placeholder="23" required />
+
+      <button type="submit">Show Gallery</button>
+    </form>
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const form = document.getElementById("selectionForm");
+    const gallery = document.getElementById("gallery");
+    const formContainer = document.getElementById("form-container");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const branch = document.getElementById("branch").value.trim().toUpperCase();
+      const type = document.getElementById("type").value.trim().toUpperCase();
+      const year = document.getElementById("year").value.trim();
+
+      if (!branch || !year.match(/^\d{2}$/) || !type) {
+        alert("Please enter valid branch, type, and 2-digit year.");
+        return;
+      }
+
+      gallery.innerHTML = "";
+      formContainer.style.display = "none";
+
+      const yearNum = parseInt(year, 10);
+      const maxImages = yearNum > 23 ? 380 : 198;
+
+      for (let i = 1; i <= maxImages; i++) {
+        const padded = String(i).padStart(3, "0");
+        const item = document.createElement("div");
+        item.classList.add("gallery-item");
+
+        let regNo = type === "L"
+          ? `l${year}${branch}${padded}`
+          : `Y${year}${branch}${padded}`;
+
+        const img = document.createElement("img");
+        img.src = `http://172.16.20.20/sis/rvrnjccestuimages/${regNo}.jpg`;
+        img.alt = regNo;
+        img.draggable = false;
+        img.ondragstart = () => false;
+
+        const caption = document.createElement("div");
+        caption.classList.add("caption");
+        caption.textContent = regNo;
+
+        item.appendChild(img);
+        item.appendChild(caption);
+        gallery.appendChild(item);
+      }
+    });
+  </script>
+</body>
+</html>
